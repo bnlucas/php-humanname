@@ -1,0 +1,26 @@
+<?php
+$PREFIXES = array_unique(array(
+    'abu',
+    'bon',
+    'bin',
+    'da',
+    'dal',
+    'de',
+    'del',
+    'dela',
+    'der',
+    'de',
+    'di',
+    'dí',
+    'ibn',
+    'la',
+    'le',
+    'san',
+    'santa',
+    'st',
+    'ste',
+    'van',
+    'vel',
+    'von',
+));
+?>
