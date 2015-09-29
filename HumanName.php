@@ -10,6 +10,8 @@ require_once('./constants/titles.php');
 
 class HumanName {
 
+    private $full_name = '';
+
     private $_full_name = '';
 
     private $title_list = array();
@@ -53,28 +55,54 @@ class HumanName {
         $this->parse_full_name();
     }
 
+    public function full_name() {
+        return trim($this->full_name);
+    }
+
     public function title() {
-        return implode(' ', $this->title_list);
+        return trim(implode(' ', $this->title_list));
     }
 
     public function first() {
-        return implode(' ', $this->first_list);
+        return trim(implode(' ', $this->first_list));
     }
 
     public function middle() {
-        return implode(' ', $this->middle_list);
+        return trim(implode(' ', $this->middle_list));
     }
 
     public function last() {
-        return implode(' ', $this->last_list);
+        return trim(implode(' ', $this->last_list));
     }
 
     public function suffix() {
-        return implode(' ', $this->suffix_list);
+        return trim(implode(' ', $this->suffix_list));
     }
 
     public function nickname() {
-        return implode(' ', $this->nickname_list);
+        return trim(implode(' ', $this->nickname_list));
+    }
+
+    public function is_parseable() {
+        if ($this->unparsable) {
+            return false;
+        }
+        return true;
+    }
+
+    public function delimited($delimiter = ',', $addition_data = array()) {
+        if ($this->unparsable) {
+            return $this->full_name;
+        }
+        return trim(implode($delimiter, array_merge(array(
+            $this->full_name(),
+            $this->title(),
+            $this->first(),
+            $this->middle(),
+            $this->last(),
+            $this->suffix(),
+            $this->nickname()
+        ), $addition_data)));
     }
 
     private function test() {
@@ -191,8 +219,8 @@ class HumanName {
                     $this->middle_list[] = $piece;
                 }
             } else {
-                $pieces = explode(' ', $parts[1], 1);
-                $lastname_pieces = $this->parse_pieces(explode(' ', $parts[0], 1));
+                $pieces = $this->parse_pieces(explode(' ', $parts[1]), 1);
+                $lastname_pieces = $this->parse_pieces(explode(' ', $parts[0]), 1);
 
                 foreach ($lastname_pieces as $piece) {
                     if ($this->is_suffix($piece) && (count($this->last_list) > 0)) {
@@ -238,7 +266,7 @@ class HumanName {
         }
 
         if ($this->test() > 0) {
-            $this->unparsable = False;
+            $this->unparsable = false;
         }
 
         $this->post_process();
@@ -250,6 +278,14 @@ class HumanName {
 
     private function post_process() {
         $this->handle_firstnames();
+
+        if ($this->first_list[0] == end($this->middle_list)) {
+            $this->unparsable = true;
+        }
+
+        if ($this->first_list[0] == end($this->last_list)) {
+            $this->unparsable = true;
+        }
     }
 
     private function parse_nicknames() {
@@ -364,13 +400,15 @@ class HumanName {
             if ($next_suffix = array_values(array_filter(slice($pieces, $i), array($this, 'is_suffix')))) {
                 $j = array_search($next_suffix[0], $pieces);
                 $new_piece = implode(' ', slice($pieces, $i, $j));
+
                 $pieces = array_merge(
                     slice($pieces, 0, $i),
                     array($new_piece),
                     slice($pieces, $j)
                 );
             } else {
-                $new_piece = implode(' ', slice($pieces, 0, $i), array($new_piece));
+                $new_piece = implode(' ', slice($pieces, $i));
+                $pieces = array_merge(slice($pieces, 0, $i), array($new_piece));
             }
         }
 
