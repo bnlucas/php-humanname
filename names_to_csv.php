@@ -28,7 +28,7 @@ if ($fp) {
         $hn = new HumanName(str_replace($email, '', $buffer));
 
         if (!$hn->is_parseable()) {
-            $bad_lines[] = trim($hn->full_name()).str_repeat('	', 7);
+            $bad_lines[] = trim($buffer).str_repeat('	', 7);
             continue;
         }
     
