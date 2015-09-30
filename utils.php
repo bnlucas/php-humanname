@@ -3,28 +3,28 @@
  * HumanName parses a supplied name, e.g. Mr. Brian Nathan (Nate) Lucas
  * into it's components [title, first, middle, last, suffix, nicknames]
  *
- * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Mr. Brian Nathan (Nate) Lucas"
+ * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Mr. John Doe (Johnny) Smith"
  * Array
  * (
- *     [name] => Mr. Brian Nathan (Nate) Lucas
+ *     [name] => Mr. John Doe (Johnny) Smith
  *     [title] => Mr.
- *     [first] => Brian
- *     [middle] => Nathan
- *     [last] => Lucas
+ *     [first] => John
+ *     [middle] => Doe
+ *     [last] => Smith
  *     [suffix] =>
- *     [nickname] => Nate
+ *     [nickname] => Johnny
  * )
  *
- * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Lucas, (Nate) Mr. Brian Nathan"
+ * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Smith, (Johnny) Mr. John Doe"
  * Array
  * (
- *     [name] => Lucas, (Nate) Mr. Brian Nathan
+ *     [name] => Smith, (Johnny) Mr. John Doe
  *     [title] => Mr.
- *     [first] => Brian
- *     [middle] => Nathan
- *     [last] => Lucas
+ *     [first] => John
+ *     [middle] => Doe
+ *     [last] => Smith
  *     [suffix] =>
- *     [nickname] => Nate
+ *     [nickname] => Johnny
  * )
  *
  * @author      Nathan Lucas <nathan@bnlucas.com>
