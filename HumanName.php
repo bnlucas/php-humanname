@@ -8,7 +8,7 @@ require_once('./constants/suffixes.php');
 require_once('./constants/titles.php');
 
 /**
- * HumanName parses a supplied name, e.g. Mr. Brian Nathan (Name) Lucas
+ * HumanName parses a supplied name, e.g. Mr. Brian Nathan (Nate) Lucas
  * into it's components [title, first, middle, last, suffix, nicknames]
  *
  * @author      Nathan Lucas <nathan@bnlucas.com>
