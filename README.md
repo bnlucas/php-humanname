@@ -48,9 +48,9 @@ print slice($name->delimited(), 1);
 
 ## Supported Formats
 Like it's Python counterpart, there are three different formats supported in HumanName:
-- Title Firstname "Nickname" Middle Middle Lastname Suffix
-- Lastname [Suffix], Title Firstname (Nickname) Middle Middle[,] Suffix [, Suffix]
-- Title Firstname M Lastname [Suffix], Suffix [Suffix] [, Suffix]
+- `Title Firstname "Nickname" Middle Middle Lastname Suffix`
+- `Lastname [Suffix], Title Firstname (Nickname) Middle Middle[,] Suffix [, Suffix]`
+- `Title Firstname M Lastname [Suffix], Suffix [Suffix] [, Suffix]`
 
 I modified the nickname regex slightly to also look for single quotes `'` so the
 following hold true for nicknames:e
