@@ -2,29 +2,29 @@
 /**
  * HumanName parses a supplied name, e.g. Mr. Brian Nathan (Nate) Lucas
  * into it's components [title, first, middle, last, suffix, nicknames]
- * 
- * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Mr. Brian Nathan (Nate) Lucas"
+ *
+ * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Mr. John Doe (Johnny) Smith"
  * Array
  * (
- *     [name] => Mr. Brian Nathan (Nate) Lucas
+ *     [name] => Mr. John Doe (Johnny) Smith
  *     [title] => Mr.
- *     [first] => Brian
- *     [middle] => Nathan
- *     [last] => Lucas
+ *     [first] => John
+ *     [middle] => Doe
+ *     [last] => Smith
  *     [suffix] =>
- *     [nickname] => Nate
+ *     [nickname] => Johnny
  * )
- * 
- * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Lucas, (Nate) Mr. Brian Nathan"
+ *
+ * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Smith, (Johnny) Mr. John Doe"
  * Array
  * (
- *     [name] => Lucas, (Nate) Mr. Brian Nathan
+ *     [name] => Smith, (Johnny) Mr. John Doe
  *     [title] => Mr.
- *     [first] => Brian
- *     [middle] => Nathan
- *     [last] => Lucas
+ *     [first] => John
+ *     [middle] => Doe
+ *     [last] => Smith
  *     [suffix] =>
- *     [nickname] => Nate
+ *     [nickname] => Johnny
  * )
  *
  * @author      Nathan Lucas <nathan@bnlucas.com>
@@ -55,23 +55,21 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
- 
-require_once('./utils.php');
-
-require_once('./constants/capitalization.php');
-require_once('./constants/conjunctions.php');
-require_once('./constants/prefixes.php');
-require_once('./constants/suffixes.php');
-require_once('./constants/titles.php');
-
 namespace HumanName;
-use HumanName\regex
+
+require_once('utils.php');
+
+require_once('constants/capitalization.php');
+require_once('constants/conjunctions.php');
+require_once('constants/prefixes.php');
+require_once('constants/suffixes.php');
+require_once('constants/titles.php');
 
 class HumanName {
 
     /**
      * Original supplied name.
-     * 
+     *
      * @access private
      * @var string
      */
@@ -79,7 +77,7 @@ class HumanName {
 
     /**
      * Supplied name with additional spaces and nickname removed.
-     * 
+     *
      * @access private
      * @var string
      */
@@ -87,7 +85,7 @@ class HumanName {
 
     /**
      * List of title pieces.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -95,7 +93,7 @@ class HumanName {
 
     /**
      * List of first name pieces.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -103,7 +101,7 @@ class HumanName {
 
     /**
      * List of middle name pieces.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -111,7 +109,7 @@ class HumanName {
 
     /**
      * List of last name pieces.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -119,7 +117,7 @@ class HumanName {
 
     /**
      * List of suffix pieces.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -127,7 +125,7 @@ class HumanName {
 
     /**
      * List of namename pieces.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -135,7 +133,7 @@ class HumanName {
 
     /**
      * Boolean if supplied name is parsable or not.
-     * 
+     *
      * @access private
      * @var bool
      */
@@ -143,7 +141,7 @@ class HumanName {
 
     /**
      * Collection of all pre-defined lists used in various checks.
-     * 
+     *
      * @access private
      * @var array
      */
@@ -152,7 +150,7 @@ class HumanName {
     /**
      * HumanName constructor. Loads pre-defined lists held in HumanName::C
      * and runs HumanName::parse_full_name() on supplied $full_name.
-     * 
+     *
      * @access public
      * @param string $full_name
      * @return HumanName
@@ -179,24 +177,24 @@ class HumanName {
 
         $this->full_name = $full_name;
         $this->_full_name = $full_name;
-        
+
         $this->parse_full_name();
     }
 
     /**
      * Returns full name supplied prior to parsing.
-     * 
+     *
      * @access public
      * @return string
      */
     public function full_name() {
-        return trim($this->full_name);
+        return trim($this->collapse_whitespace($this->full_name));
     }
 
     /**
      * The person's titles. Consecutive pieces in HumanName::C['titles']
      * or HumanName::C['conjunctions']
-     * 
+     *
      * @access public
      * @return string
      */
@@ -207,12 +205,12 @@ class HumanName {
     /**
      * The person's first name. The piece after any known HumanName::title()
      * Includes conjunctions such as `John and Jane` or `John & Jane`
-     * 
+     *
      * @todo currently, conjoined names such as `John and Jane` parse correctly,
      * however `John Bob and Jane Ann` will parse:
      * >>> HumanName::first() = John
      * >>> HumanName::middle() = Bob and Jane Ann
-     * 
+     *
      * @access public
      * @return string
      */
@@ -223,12 +221,12 @@ class HumanName {
     /**
      * The person's middle name(s). These are the pieces between first name
      * and last name.
-     * 
+     *
      * @todo currently, conjoined names such as `John and Jane` parse correctly,
      * however `John Bob and Jane Ann` will parse:
      * >>> HumanName::first() = John
      * >>> HumanName::middle() = Bob and Jane Ann
-     * 
+     *
      * @access public
      * @return string
      */
@@ -238,7 +236,7 @@ class HumanName {
 
     /**
      * The person's last name. Last name piece parsed.
-     * 
+     *
      * @access public
      * @return string
      */
@@ -250,7 +248,7 @@ class HumanName {
      * The person's suffixes. Pieces at the end of the name that are found
      * in HumanName::C['suffixes'] or pieces found at the end of a comma separated
      * formats, e.g. `Lastname, Title Firstname Middle[,] Suffix [, Suffix]
-     * 
+     *
      * @access public
      * @return string
      */
@@ -261,7 +259,7 @@ class HumanName {
     /**
      * The person's nickname. These are parsed as `(nickname)`, `'nickname'`,
      * `"nickname"`.
-     * 
+     *
      * @access public
      * @return string
      */
@@ -271,7 +269,7 @@ class HumanName {
 
     /**
      * Returns if the name was parsable or not.
-     * 
+     *
      * @access public
      * @return bool
      */
@@ -284,7 +282,7 @@ class HumanName {
 
     /**
      * Returns associative array of all name pieces.
-     * 
+     *
      * @access public
      * @return array
      */
@@ -299,10 +297,10 @@ class HumanName {
             'nickname' => $this->nickname()
         );
     }
-    
+
     /**
      * Returns delimited string for use in CSV files.
-     * 
+     *
      * @access public
      * @param string $delimiter
      * @param array $additional_data
@@ -324,7 +322,7 @@ class HumanName {
 
     /**
      * Used in determining if the name was parsed correctly.
-     * 
+     *
      * @access public
      * @return int
      */
@@ -349,12 +347,13 @@ class HumanName {
     }
 
     /**
-     * Name parser ran when HumanName::$full_name is set on instantiation. Basic flow
-     * is to hand off to HumanName::pre_process() to remove nicknames. It is then split
-     * on commas and chooses a code path depending on number of commas. These pieces then
-     * run through HumanName::parse_pieces() to split those parts on spaces and joins
-     * any needed with HumanName::join_on_conjunctions().
-     * 
+     * Name parser ran when HumanName::$full_name is set on instantiation. Basic
+     * flow is to hand off to HumanName::pre_process() to remove nicknames. It
+     * is then split on commas and chooses a code path depending on number of
+     * commas. These pieces then run through HumanName::parse_pieces() to split
+     * those parts on spaces and joins any needed with
+     * HumanName::join_on_conjunctions().
+     *
      * @access private
      * @return voic
      */
@@ -418,7 +417,7 @@ class HumanName {
                 $this->suffix_list = array_merge($this->suffix_list, slice($pieces, 1));
 
                 $pieces = $this->parse_pieces(explode(' ', $parts[0]));
-                
+
                 $i = -1;
                 foreach ($pieces as $piece) {
                     $i++;
@@ -507,7 +506,7 @@ class HumanName {
 
     /**
      * Methods ran prior to parsing pieces.
-     * 
+     *
      * @access private
      * @return voice
      */
@@ -520,11 +519,11 @@ class HumanName {
      * and checks if last element of HumanName::middle_list is the same as
      * the first element of HumanName::first_list as well as the last element
      * of HumanName::last_list and first element of HumanName::first_list.
-     * 
+     *
      * These checks were added in response to an issue of checking email addresses
      * that are not formatted properly and contain a space before `@`. If either
      * of the checks fail, the name is flagged unparsable.
-     * 
+     *
      * @access private
      * @return void
      */
@@ -542,11 +541,11 @@ class HumanName {
 
     /**
      * Parsed out nicknames and sets HumanName::nickname_list
-     * 
+     *
      * - (nickname)
      * - 'nickname'
      * - "nickname"
-     * 
+     *
      * @access private
      * @return void
      */
@@ -562,18 +561,18 @@ class HumanName {
     /**
      * If there's only two parts and one is a title, assumes title is a last name
      * instead of a firstname.
-     * 
+     *
      * Without this check, Mr. Johnson is parsed:
      * >>> HumanName::title() = Mr.
      * >>> HumanName::first() = Johnson
-     * 
+     *
      * With this check, Mr. Johnson is parsed:
      * >>> HumanName::title() = Mr.
      * >>> HumanName::last() = Johnson
-     * 
+     *
      * In certain circumstances, the use of a special title, e.g Sir Johnson, John
      * would be set as first name, not last.
-     * 
+     *
      * @access private
      * @return void
      */
@@ -589,7 +588,7 @@ class HumanName {
 
     /**
      * Removes double spacing found in $string
-     * 
+     *
      * @access private
      * @param string $string
      * @return string
@@ -603,11 +602,11 @@ class HumanName {
     * and last name prefixes `de la Cruz`. If parts have a period in middle, tries
     * splitting on these and checks if the parts are titles or suffixes. If they are,
     * adds them to the HumanName::C lists so they will be found.
-    * 
+    *
     * $additional_parts_count is used for when the comma format contains other parts,
     * so we know how many there are to decide if things should be considered a
     * conjunction.
-    * 
+    *
     * @access private
     * @param array $parts
     * @param int $additional_parts_count
@@ -645,19 +644,19 @@ class HumanName {
 
     /**
      * Join conjunctions to surrounding pieces.
-     * 
+     *
      * - Mr. and Mrs.
      * - King of the Hill
      * - Jack & Jill
      * - Velasquez y Garcia
-     * 
+     *
      * Returns new array of pieces with the conjunctions merged into one piece
      * with spaces between.
-     * 
+     *
      * $additional_parts_count is used for when the comma format contains other parts,
      * so we know how many there are to decide if things should be considered a
      * conjunction.
-     * 
+     *
      * @access private
      * @param array $pieces
      * @param int $additional_parts_count
@@ -739,7 +738,7 @@ class HumanName {
 
     /**
      * Checks if $piece is in list of HumanName::C['titles']
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
@@ -751,7 +750,7 @@ class HumanName {
     /**
      * Checks if $piece is on of the defined conjunctions in
      * HumanName::C['conjunctions'] and not an initial.
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
@@ -762,7 +761,7 @@ class HumanName {
 
     /**
      * Checks if $piece is in HumanName::C['prexies'] and not an initial.
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
@@ -774,7 +773,7 @@ class HumanName {
 
     /**
      * Checks if $piece is a roman numeral.
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
@@ -787,7 +786,7 @@ class HumanName {
      * Checks if $piece is in HumanName::C['suffix_acronyms'] and
      * HumanName::C['suffix_not_acronyms'] and is not an initial. Also
      * strips `.` to ensure proper matching in lists.
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
@@ -799,7 +798,7 @@ class HumanName {
 
     /**
      * Checks an array for HumanName::is_suffix($piece)
-     * 
+     *
      * @access private
      * @param array $pieces
      * @return bool
@@ -816,7 +815,7 @@ class HumanName {
     /**
      * Checks if $piece is not in HumanName::C['suffixes_prefixes_titles'] and
      * not an initial.
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
@@ -827,7 +826,7 @@ class HumanName {
 
     /**
      * Checks in $piece is an initial. `A.`
-     * 
+     *
      * @access private
      * @param string $piece
      * @return bool
