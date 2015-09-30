@@ -11,6 +11,8 @@
  * @version    Release: @package_version@
  * @link       http://framework.zend.com/package/PackageName
  */
+namespace HumanName;
+
 class regex {
     const spaces            = '/\s+/';
     const word              = '/\w+/';
