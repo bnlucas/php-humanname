@@ -406,7 +406,6 @@ class HumanName {
 
                 if (!$nxt) {
                     $this->last_list[] = $piece;
-                    print 'null';
                     continue;
                 }
 
@@ -414,8 +413,7 @@ class HumanName {
             }
         } else {
             if ($this->are_suffixes(explode(' ', $parts[1]))) {
-                $this->suffix_list = array_merge($this->suffix_list, slice($pieces, 1));
-
+                $this->suffix_list = array_merge($this->suffix_list, slice($parts, 1));
                 $pieces = $this->parse_pieces(explode(' ', $parts[0]));
 
                 $i = -1;
@@ -432,13 +430,13 @@ class HumanName {
                         continue;
                     }
 
-                    if (!$this->first) {
+                    if (!$this->first()) {
                         $this->first_list[] = $piece;
                         continue;
                     }
 
                     if ($this->are_suffixes(slice($pieces, $i + 1))) {
-                        $this->last_list[] = $pieces;
+                        $this->last_list[] = $piece;
                         $this->suffix_list = array_merge(slice($pieces, $i + 1), $this->suffix_list);
                         break;
                     }
@@ -451,6 +449,7 @@ class HumanName {
                     $this->middle_list[] = $piece;
                 }
             } else {
+                print '---';
                 $pieces = $this->parse_pieces(explode(' ', $parts[1]), 1);
                 $lastname_pieces = $this->parse_pieces(explode(' ', $parts[0]), 1);
 
