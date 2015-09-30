@@ -1,15 +1,31 @@
 <?php
-require_once('./utils.php');
-
-require_once('./constants/capitalization.php');
-require_once('./constants/conjunctions.php');
-require_once('./constants/prefixes.php');
-require_once('./constants/suffixes.php');
-require_once('./constants/titles.php');
-
 /**
  * HumanName parses a supplied name, e.g. Mr. Brian Nathan (Nate) Lucas
  * into it's components [title, first, middle, last, suffix, nicknames]
+ * 
+ * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Mr. Brian Nathan (Nate) Lucas"
+ * Array
+ * (
+ *     [name] => Mr. Brian Nathan (Nate) Lucas
+ *     [title] => Mr.
+ *     [first] => Brian
+ *     [middle] => Nathan
+ *     [last] => Lucas
+ *     [suffix] =>
+ *     [nickname] => Nate
+ * )
+ * 
+ * C:\Users\nlucas\utilities\php-humanname>php cli.php --name="Lucas, (Nate) Mr. Brian Nathan"
+ * Array
+ * (
+ *     [name] => Lucas, (Nate) Mr. Brian Nathan
+ *     [title] => Mr.
+ *     [first] => Brian
+ *     [middle] => Nathan
+ *     [last] => Lucas
+ *     [suffix] =>
+ *     [nickname] => Nate
+ * )
  *
  * @author      Nathan Lucas <nathan@bnlucas.com>
  * @copyright   2015 Nathan Lucas
@@ -39,6 +55,18 @@ require_once('./constants/titles.php');
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+ 
+require_once('./utils.php');
+
+require_once('./constants/capitalization.php');
+require_once('./constants/conjunctions.php');
+require_once('./constants/prefixes.php');
+require_once('./constants/suffixes.php');
+require_once('./constants/titles.php');
+
+namespace HumanName;
+use HumanName\regex
+
 class HumanName {
 
     /**
@@ -254,6 +282,24 @@ class HumanName {
         return true;
     }
 
+    /**
+     * Returns associative array of all name pieces.
+     * 
+     * @access public
+     * @return array
+     */
+    public function components() {
+        return array(
+            'name' => $this->full_name(),
+            'title' => $this->title(),
+            'first' => $this->first(),
+            'middle' => $this->middle(),
+            'last' => $this->last(),
+            'suffix' => $this->suffix(),
+            'nickname' => $this->nickname()
+        );
+    }
+    
     /**
      * Returns delimited string for use in CSV files.
      * 
